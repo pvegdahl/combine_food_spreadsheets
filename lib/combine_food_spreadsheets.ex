@@ -18,6 +18,12 @@ defmodule CombineFoodSpreadsheets do
     |> Enum.find_index(&(&1 == "Data"))
   end
 
+  def build_output(table_data) do
+    table_data
+    |> parse_table_data()
+    |> output_format()
+  end
+
   def parse_table_data(table_data) do
     table_data
     |> Enum.reject(&list_starts_with_nil_or_empty?/1)
@@ -49,9 +55,14 @@ defmodule CombineFoodSpreadsheets do
 
   defp parse_rows(rows, header_indices) do
     Enum.map(rows, &parse_row(&1, header_indices))
+    |> Map.new()
   end
 
   defp parse_row(row, day: day_index, duplicate: duplicate_index, log: log_index) do
-    {Enum.at(row, day_index), Enum.at(row, duplicate_index), Enum.at(row, log_index)}
+    {{Enum.at(row, day_index), Enum.at(row, duplicate_index)}, Enum.at(row, log_index)}
+  end
+
+  defp output_format(sample_data) do
+    header = ["Day", "Duplicate"] ++ Enum.map(sample_data, &elem(&1, 0))
   end
 end
