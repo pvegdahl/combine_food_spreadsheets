@@ -35,7 +35,18 @@ defmodule CombineFoodSpreadsheetsTest do
              [1, 1, 7.65, nil],
              [1, 2, 7.61, nil],
              [3, 1, nil, 2.65],
-             [3, 2, nil, 2.61],
+             [3, 2, nil, 2.61]
            ]
+  end
+
+  test "Multi dimensional array to index map" do
+    assert CombineFoodSpreadsheets.mda_to_index_map([[1, 2, 3], [4, 5, 6]]) == %{
+             {0, 0} => 1,
+             {0, 1} => 2,
+             {0, 2} => 3,
+             {1, 0} => 4,
+             {1, 1} => 5,
+             {1, 2} => 6
+           }
   end
 end

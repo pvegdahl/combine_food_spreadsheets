@@ -1,4 +1,10 @@
 defmodule CombineFoodSpreadsheets do
+  def combine(files) do
+    files
+    |> Enum.flat_map(&read_data_sheet/1)
+    |> build_output()
+  end
+
   defp read_data_sheet(path) do
     tables =
       Xlsxir.multi_extract(path)
@@ -72,17 +78,26 @@ defmodule CombineFoodSpreadsheets do
     [header | output_rows]
   end
 
-  defp output_header(sample_data), do: header = ["Day", "Duplicate"] ++ Enum.map(sample_data, &elem(&1, 0))
+  defp output_header(sample_data), do: ["Day", "Duplicate"] ++ Enum.map(sample_data, &elem(&1, 0))
 
   defp sorted_day_duplicates(sample_data) do
-    data_duplicate_pairs =
-      sample_data
-      |> Enum.flat_map(fn {_name, data} -> Map.keys(data) end)
-      |> Enum.uniq()
-      |> Enum.sort()
+    sample_data
+    |> Enum.flat_map(fn {_name, data} -> Map.keys(data) end)
+    |> Enum.uniq()
+    |> Enum.sort()
   end
 
   defp output_row({day, duplicate} = day_dup_pair, sample_data) do
     [day, duplicate] ++ Enum.map(sample_data, fn {_name, data} -> Map.get(data, day_dup_pair) end)
+  end
+
+  defp multi_dim_array_to_xlsx(mda, output_file) do
+    new_sheet = Elixlsx.Sheet.with_name("Log Data")
+  end
+
+  def mda_to_index_map(mda) do
+    for {row, r_index} <- Enum.with_index(mda), {cell_value, c_index} <- Enum.with_index(row), into: %{} do
+      {{r_index, c_index}, cell_value}
+    end
   end
 end
