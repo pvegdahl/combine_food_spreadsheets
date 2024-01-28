@@ -63,6 +63,26 @@ defmodule CombineFoodSpreadsheets do
   end
 
   defp output_format(sample_data) do
-    header = ["Day", "Duplicate"] ++ Enum.map(sample_data, &elem(&1, 0))
+    header = output_header(sample_data)
+
+    output_rows =
+      sorted_day_duplicates(sample_data)
+      |> Enum.map(fn day_dup_pair -> output_row(day_dup_pair, sample_data) end)
+
+    [header | output_rows]
+  end
+
+  defp output_header(sample_data), do: header = ["Day", "Duplicate"] ++ Enum.map(sample_data, &elem(&1, 0))
+
+  defp sorted_day_duplicates(sample_data) do
+    data_duplicate_pairs =
+      sample_data
+      |> Enum.flat_map(fn {_name, data} -> Map.keys(data) end)
+      |> Enum.uniq()
+      |> Enum.sort()
+  end
+
+  defp output_row({day, duplicate} = day_dup_pair, sample_data) do
+    [day, duplicate] ++ Enum.map(sample_data, fn {_name, data} -> Map.get(data, day_dup_pair) end)
   end
 end
