@@ -1,8 +1,9 @@
 defmodule CombineFoodSpreadsheets do
-  def combine(files) do
+  def combine(files, output_file) do
     files
     |> Enum.flat_map(&read_data_sheet/1)
     |> build_output()
+    |> multi_dim_array_to_xlsx(output_file)
   end
 
   defp read_data_sheet(path) do
@@ -92,12 +93,22 @@ defmodule CombineFoodSpreadsheets do
   end
 
   defp multi_dim_array_to_xlsx(mda, output_file) do
-    new_sheet = Elixlsx.Sheet.with_name("Log Data")
+    sheet =
+      mda
+      |> mda_to_index_map()
+      |> Enum.reduce(Elixlsx.Sheet.with_name("Log Data"), &set_cell/2)
+
+    Elixlsx.Workbook.append_sheet(%Elixlsx.Workbook{}, sheet)
+    |> Elixlsx.write_to(output_file)
   end
 
   def mda_to_index_map(mda) do
     for {row, r_index} <- Enum.with_index(mda), {cell_value, c_index} <- Enum.with_index(row), into: %{} do
       {{r_index, c_index}, cell_value}
     end
+  end
+
+  defp set_cell({{r_index, c_index}, cell_value}, sheet) do
+    Elixlsx.Sheet.set_at(sheet, r_index, c_index, cell_value)
   end
 end
