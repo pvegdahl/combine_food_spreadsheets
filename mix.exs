@@ -20,6 +20,9 @@ defmodule CombineFoodSpreadsheets.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:xlsxir, "~> 1.6.4"}]
+    [
+      {:elixlsx, "~> 0.5.1"},
+      {:xlsxir, "~> 1.6.4"}
+    ]
   end
 end
