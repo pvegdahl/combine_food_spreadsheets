@@ -3,6 +3,5 @@ defmodule CombineFoodSpreadsheetsTest do
   doctest CombineFoodSpreadsheets
 
   test "greets the world" do
-    assert CombineFoodSpreadsheets.hello() == :world
   end
 end

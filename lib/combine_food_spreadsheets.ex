@@ -1,18 +1,20 @@
 defmodule CombineFoodSpreadsheets do
-  @moduledoc """
-  Documentation for `CombineFoodSpreadsheets`.
-  """
+  defp read_data_sheet(path) do
+    tables =
+      Xlsxir.multi_extract(path)
+      |> Enum.map(fn {:ok, table_id} -> table_id end)
 
-  @doc """
-  Hello world.
+    index = data_table_index(tables)
 
-  ## Examples
+    tables
+    |> Enum.at(index)
+    |> Xlsxir.get_list()
+  end
 
-      iex> CombineFoodSpreadsheets.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  defp data_table_index(tables) do
+    tables
+    |> Enum.map(&Xlsxir.get_info/1)
+    |> Enum.map(&Keyword.get(&1, :name))
+    |> Enum.find_index(&(&1 == "Data"))
   end
 end
