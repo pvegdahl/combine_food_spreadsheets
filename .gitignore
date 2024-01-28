@@ -27,3 +27,7 @@ combine_food_spreadsheets-*.tar
 
 # JetBrains IDEs
 .idea/
+*.iml
+
+# Manual test data
+demo.xlsx
