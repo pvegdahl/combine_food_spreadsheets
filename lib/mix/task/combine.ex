@@ -9,7 +9,18 @@ defmodule Mix.Tasks.Combine do
 
   @shortdoc "Combine the given list of spreadsheets"
   def run(files) do
-    output_file = "out.xlsx"
-    CombineFoodSpreadsheets.combine(files, output_file)
+    output_filename = output_file()
+    CombineFoodSpreadsheets.combine(files, output_filename)
+
+    IO.puts(output_filename)
+  end
+
+  defp output_file() do
+    datetime_string =
+      DateTime.utc_now()
+      |> DateTime.to_string()
+      |> String.replace(" ", "_")
+
+    "log_data_#{datetime_string}.xlsx"
   end
 end
